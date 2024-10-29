@@ -20,12 +20,16 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install Linux Deps
+      run: sudo apt update -y && sudo apt install -y libwayland-dev
+      if: ${{ runner.os == 'Linux' }}
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
