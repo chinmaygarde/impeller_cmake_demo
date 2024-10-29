@@ -11,20 +11,28 @@ include(FetchContent)
 
 set(IMPELLER_SDK_SHA b7c3af43f90ac9aaf66dbd10b922c25addd9c3db)
 if(CMAKE_HOST_APPLE)
-  set(IMPELLER_ARCH darwin-${CMAKE_HOST_SYSTEM_PROCESSOR})
+  set(IMPELLER_PLATFORM darwin)
 elseif(CMAKE_HOST_LINUX)
-  set(IMPELLER_ARCH linux-${CMAKE_HOST_SYSTEM_PROCESSOR})
+  set(IMPELLER_PLATFORM linux)
 elseif(CMAKE_HOST_WIN32)
-  set(IMPELLER_ARCH windows-${CMAKE_HOST_SYSTEM_PROCESSOR})
+  set(IMPELLER_PLATFORM windows)
 else()
-message(FATAL_ERROR "Unknown/unsupported Impeller platform")
+message(FATAL_ERROR "Unsupported platform.")
 endif()
 
-message(NOTICE "Impeller SDK ${IMPELLER_SDK_SHA} for ${IMPELLER_ARCH} selected.")
+if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+  set(IMPELLER_ARCH arm64)
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  set(IMPELLER_ARCH x64)
+else()
+message(FATAL_ERROR "Unsupported architecture.")
+endif()
+
+message(NOTICE "Impeller SDK ${IMPELLER_SDK_SHA} for ${IMPELLER_PLATFORM}-${IMPELLER_ARCH} selected.")
 
 FetchContent_Declare(
   impeller_sdk
-  URL https://storage.googleapis.com/flutter_infra_release/flutter/${IMPELLER_SDK_SHA}/${IMPELLER_ARCH}/impeller_sdk.zip
+  URL https://storage.googleapis.com/flutter_infra_release/flutter/${IMPELLER_SDK_SHA}/${IMPELLER_PLATFORM}-${IMPELLER_ARCH}/impeller_sdk.zip
 )
 FetchContent_MakeAvailable(impeller_sdk)
 add_library(impeller SHARED IMPORTED)
