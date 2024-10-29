@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.25)
+
+project(impeller_demo)
 
 cmake_policy(SET CMP0135 NEW)
 include(FetchContent)
@@ -8,9 +10,21 @@ include(FetchContent)
 # ------------------------------------------------------------------------------
 
 set(IMPELLER_SDK_SHA b7c3af43f90ac9aaf66dbd10b922c25addd9c3db)
+if(CMAKE_HOST_APPLE)
+  set(IMPELLER_ARCH darwin-${CMAKE_HOST_SYSTEM_PROCESSOR})
+elseif(CMAKE_HOST_LINUX)
+  set(IMPELLER_ARCH linux-${CMAKE_HOST_SYSTEM_PROCESSOR})
+elseif(CMAKE_HOST_WIN32)
+  set(IMPELLER_ARCH windows-${CMAKE_HOST_SYSTEM_PROCESSOR})
+else()
+message(FATAL_ERROR "Unknown/unsupported Impeller platform")
+endif()
+
+message(NOTICE "Impeller SDK ${IMPELLER_SDK_SHA} for ${IMPELLER_ARCH} selected.")
+
 FetchContent_Declare(
   impeller_sdk
-  URL https://storage.googleapis.com/flutter_infra_release/flutter/${IMPELLER_SDK_SHA}/darwin-arm64/impeller_sdk.zip
+  URL https://storage.googleapis.com/flutter_infra_release/flutter/${IMPELLER_SDK_SHA}/${IMPELLER_ARCH}/impeller_sdk.zip
 )
 FetchContent_MakeAvailable(impeller_sdk)
 add_library(impeller SHARED IMPORTED)
@@ -46,6 +60,5 @@ FetchContent_MakeAvailable(glfw)
 # --- Setup Project ------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-project(impeller_demo)
 add_executable(impeller_demo demo.c)
 target_link_libraries(impeller_demo glfw impeller)
