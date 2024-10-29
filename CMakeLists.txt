@@ -12,10 +12,13 @@ include(FetchContent)
 set(IMPELLER_SDK_SHA b7c3af43f90ac9aaf66dbd10b922c25addd9c3db)
 if(CMAKE_HOST_APPLE)
   set(IMPELLER_PLATFORM darwin)
+  set(IMPELLER_DYLIB libimpeller.dylib)
 elseif(CMAKE_HOST_LINUX)
   set(IMPELLER_PLATFORM linux)
+  set(IMPELLER_DYLIB libimpeller.so)
 elseif(CMAKE_HOST_WIN32)
   set(IMPELLER_PLATFORM windows)
+  set(IMPELLER_DYLIB libimpeller.dll)
 else()
 message(FATAL_ERROR "Unsupported platform.")
 endif()
@@ -36,9 +39,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(impeller_sdk)
 add_library(impeller SHARED IMPORTED)
+
 set_target_properties(impeller
   PROPERTIES
-  IMPORTED_LOCATION ${impeller_sdk_SOURCE_DIR}/lib/libimpeller.dylib
+  IMPORTED_LOCATION ${impeller_sdk_SOURCE_DIR}/lib/${IMPELLER_DYLIB}
 )
 target_include_directories(impeller INTERFACE ${impeller_sdk_SOURCE_DIR}/include)
 list(APPEND CMAKE_INSTALL_RPATH ${impeller_sdk_SOURCE_DIR}/lib)
