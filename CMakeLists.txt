@@ -9,7 +9,7 @@ include(FetchContent)
 # --- Setup Impeller -----------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-set(IMPELLER_SDK_SHA b7c3af43f90ac9aaf66dbd10b922c25addd9c3db)
+set(IMPELLER_SDK_SHA 97f358fd0a7e06be8e36c634671f1a228ccf42c8)
 if(CMAKE_HOST_APPLE)
   set(IMPELLER_PLATFORM darwin)
   set(IMPELLER_DYLIB libimpeller.dylib)
